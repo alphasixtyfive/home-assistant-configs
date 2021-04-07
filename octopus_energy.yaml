@@ -33,6 +33,11 @@ sensor:
           valid_from: "{{ (state_attr('sensor.agile_rates_today', 'results') | sort(attribute='value_inc_vat') | first).valid_from }}"
           valid_to: "{{ (state_attr('sensor.agile_rates_today', 'results') | sort(attribute='value_inc_vat') | first).valid_to }}"
 
+      agile_avg_rate:
+        friendly_name: Agile avg rate
+        value_template: "{{ '%.2f' | format(state_attr('sensor.agile_rates_today', 'results') | sum(attribute='value_inc_vat') / 48) }}"
+        unit_of_measurement: 'p/kWh'
+
       agile_current_rate:
         friendly_name: Agile current rate
         value_template: >-
