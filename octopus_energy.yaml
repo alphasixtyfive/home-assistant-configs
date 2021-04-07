@@ -1,0 +1,62 @@
+sensor:
+  - platform: rest
+    name: Agile rates today
+    resource_template: >-
+      {% set region = 'A' %}
+      {% set from = as_timestamp(utcnow().timestamp() | timestamp_custom('%Y-%m-%d', False) + 'T00:00:00Z') %}
+      {% set to = from + 24 * 60 * 60 %}
+      {% set format = '%Y-%m-%dT%H:%M:%SZ' %}
+      https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-{{ region }}/standard-unit-rates/?period_from={{ from | timestamp_custom(format, False) }}&period_to={{ to | timestamp_custom(format, False) }}
+    value_template: "{{ as_timestamp(value_json.results[-1].valid_from) | timestamp_custom('%Y-%m-%d', True) }}"
+    json_attributes:
+      - "results"
+
+  - platform: rest
+    name: Agile rates tomorrow
+    resource_template: >-
+      {% set region = 'A' %}
+      {% set from = as_timestamp(utcnow().timestamp() | timestamp_custom('%Y-%m-%d', False) + 'T00:00:00Z') + 24 * 60 * 60 %}
+      {% set to = from + 24 * 60 * 60 %}
+      {% set format = '%Y-%m-%dT%H:%M:%SZ' %}
+      https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-{{ region }}/standard-unit-rates/?period_from={{ from | timestamp_custom(format, False) }}&period_to={{ to | timestamp_custom(format, False) }}
+    value_template: "{{ as_timestamp(value_json.results[-1].valid_from) | timestamp_custom('%Y-%m-%d', True) }}"
+    json_attributes:
+      - "results"
+
+  - platform: template
+    sensors:
+      agile_min_rate:
+        friendly_name: Agile min rate
+        value_template: "{{ '%.2f' | format((state_attr('sensor.agile_rates_today', 'results') | sort(attribute='value_inc_vat') | first).value_inc_vat) }}"
+        unit_of_measurement: 'p/kWh'
+        attribute_templates:
+          valid_from: "{{ (state_attr('sensor.agile_rates_today', 'results') | sort(attribute='value_inc_vat') | first).valid_from }}"
+          valid_to: "{{ (state_attr('sensor.agile_rates_today', 'results') | sort(attribute='value_inc_vat') | first).valid_to }}"
+
+      agile_current_rate:
+        friendly_name: Agile current rate
+        value_template: >-
+          {% set from = ((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+          {{ '%.2f' | format((state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).value_inc_vat) }}
+        unit_of_measurement: 'p/kWh'
+        attribute_templates:
+          valid_from: >-
+            {% set from = ((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+            {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_from }}
+          valid_to: >-
+            {% set from = ((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+            {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_to }}
+
+      agile_next_rate:
+        friendly_name: Agile next rate
+        value_template: >-
+          {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) + 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+          {{ '%.2f' | format((state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).value_inc_vat) }}
+        unit_of_measurement: 'p/kWh'
+        attribute_templates:
+          valid_from: >-
+            {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) + 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+            {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_from }}
+          valid_to: >-
+            {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) + 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+            {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_to }}
