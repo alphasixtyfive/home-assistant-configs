@@ -26,7 +26,7 @@ sensor:
   - platform: template
     sensors:
       agile_min_rate:
-        friendly_name: Agile min rate
+        friendly_name: Agile minimum rate
         value_template: "{{ '%.2f' | format((state_attr('sensor.agile_rates_today', 'results') | sort(attribute='value_inc_vat') | first).value_inc_vat) }}"
         unit_of_measurement: 'p/kWh'
         attribute_templates:
@@ -34,7 +34,7 @@ sensor:
           valid_to: "{{ (state_attr('sensor.agile_rates_today', 'results') | sort(attribute='value_inc_vat') | first).valid_to }}"
 
       agile_avg_rate:
-        friendly_name: Agile avg rate
+        friendly_name: Agile average rate
         value_template: "{{ '%.2f' | format(state_attr('sensor.agile_rates_today', 'results') | sum(attribute='value_inc_vat') / 48) }}"
         unit_of_measurement: 'p/kWh'
 
@@ -64,4 +64,18 @@ sensor:
             {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_from }}
           valid_to: >-
             {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) + 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+            {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_to }}
+
+      agile_prev_rate:
+        friendly_name: Agile previous rate
+        value_template: >-
+          {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) - 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+          {{ '%.2f' | format((state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).value_inc_vat) }}
+        unit_of_measurement: 'p/kWh'
+        attribute_templates:
+          valid_from: >-
+            {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) - 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+            {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_from }}
+          valid_to: >-
+            {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) - 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
             {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_to }}
