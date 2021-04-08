@@ -14,6 +14,20 @@ sensor:
       - "results"
 
   - platform: rest
+    name: Gas consumption
+    resource_template: >-
+      {% set mprn = 'XXX' %}
+      {% set serial = 'YYY' %}
+      {% set date = (now() - timedelta(days = 1)).strftime('%Y-%m-%d') %}
+      https://api.octopus.energy/v1/gas-meter-points/{{ mprn }}/meters/{{ serial }}/consumption/?period_from={{ date + 'T00:00:00' }}&period_to={{ date + 'T23:59:59' }}
+    headers:
+      Authorization: !secret octopus_auth
+    value_template: "{{ value_json.results | sum(attribute='consumption') | round(3) }}"
+    unit_of_measurement: 'm³'
+    json_attributes:
+      - "results"
+
+  - platform: rest
     name: Agile rates today
     resource_template: >-
       {% set region = 'A' %}
