@@ -4,7 +4,7 @@ sensor:
     resource_template: >-
       {% set mpan = 'XXX' %}
       {% set serial = 'YYY' %}
-      {% set date = (now() - timedelta(days = 1)).strftime('%Y-%m-%d') %}
+      {% set date = as_timestamp(now() - timedelta(days = 1)) | timestamp_custom('%Y-%m-%d') %}
       https://api.octopus.energy/v1/electricity-meter-points/{{ mpan }}/meters/{{ serial }}/consumption/?period_from={{ date + 'T00:00:00' }}&period_to={{ date + 'T23:59:59' }}
     headers:
       Authorization: !secret octopus_auth
@@ -18,7 +18,7 @@ sensor:
     resource_template: >-
       {% set mprn = 'XXX' %}
       {% set serial = 'YYY' %}
-      {% set date = (now() - timedelta(days = 1)).strftime('%Y-%m-%d') %}
+      {% set date = as_timestamp(now() - timedelta(days = 1)) | timestamp_custom('%Y-%m-%d') %}
       https://api.octopus.energy/v1/gas-meter-points/{{ mprn }}/meters/{{ serial }}/consumption/?period_from={{ date + 'T00:00:00' }}&period_to={{ date + 'T23:59:59' }}
     headers:
       Authorization: !secret octopus_auth
@@ -31,8 +31,10 @@ sensor:
     name: Agile rates today
     resource_template: >-
       {% set region = 'A' %}
-      {% set date = utcnow().strftime('%Y-%m-%d') %}
-      https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-{{ region }}/standard-unit-rates/?period_from={{ date + 'T00:00:00Z' }}&period_to={{ date + 'T23:59:59Z' }}
+      {% set from = as_timestamp(as_timestamp(now()) | timestamp_custom('%Y-%m-%d') + 'T00:00:00') %}
+      {% set to = from + 24 * 60 * 60 %}
+      {% set format = '%Y-%m-%dT%H:%M:%SZ' %}
+      https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-{{ region }}/standard-unit-rates/?period_from={{ from | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) }}&period_to={{ to | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) }}
     value_template: "{{ as_timestamp(value_json.results[-1].valid_from) | timestamp_custom('%Y-%m-%d') }}"
     json_attributes:
       - "results"
@@ -41,8 +43,10 @@ sensor:
     name: Agile rates tomorrow
     resource_template: >-
       {% set region = 'A' %}
-      {% set date = (utcnow() + timedelta(days = 1)).strftime('%Y-%m-%d') %}
-      https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-{{ region }}/standard-unit-rates/?period_from={{ date + 'T00:00:00Z' }}&period_to={{ date + 'T23:59:59Z' }}
+      {% set from = as_timestamp(as_timestamp(now() + timedelta(days = 1)) | timestamp_custom('%Y-%m-%d') + 'T00:00:00') %}
+      {% set to = from + 24 * 60 * 60 %}
+      {% set format = '%Y-%m-%dT%H:%M:%SZ' %}
+      https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-{{ region }}/standard-unit-rates/?period_from={{ from | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) }}&period_to={{ to | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) }}
     value_template: "{{ as_timestamp(value_json.results[-1].valid_from) | timestamp_custom('%Y-%m-%d') }}"
     json_attributes:
       - "results"
@@ -67,43 +71,43 @@ sensor:
         friendly_name: Agile current rate
         icon_template: mdi:flash
         value_template: >-
-          {% set from = ((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+          {% set from = ((as_timestamp(utcnow()) / 1800) | round(0, 'floor') | int * 1800) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
           {{ '%.2f' | format((state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).value_inc_vat) }}
         unit_of_measurement: 'p/kWh'
         attribute_templates:
           valid_from: >-
-            {% set from = ((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+            {% set from = ((as_timestamp(utcnow()) / 1800) | round(0, 'floor') | int * 1800) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
             {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_from }}
           valid_to: >-
-            {% set from = ((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+            {% set from = ((as_timestamp(utcnow()) / 1800) | round(0, 'floor') | int * 1800) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
             {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_to }}
 
       agile_next_rate:
         friendly_name: Agile next rate
         icon_template: mdi:flash
         value_template: >-
-          {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) + 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+          {% set from = (((as_timestamp(utcnow()) / 1800) | round(0, 'floor') | int * 1800) + 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
           {{ '%.2f' | format((state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).value_inc_vat) }}
         unit_of_measurement: 'p/kWh'
         attribute_templates:
           valid_from: >-
-            {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) + 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+            {% set from = (((as_timestamp(utcnow()) / 1800) | round(0, 'floor') | int * 1800) + 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
             {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_from }}
           valid_to: >-
-            {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) + 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+            {% set from = (((as_timestamp(utcnow()) / 1800) | round(0, 'floor') | int * 1800) + 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
             {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_to }}
 
       agile_prev_rate:
         friendly_name: Agile previous rate
         icon_template: mdi:flash
         value_template: >-
-          {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) - 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+          {% set from = (((as_timestamp(utcnow()) / 1800) | round(0, 'floor') | int * 1800) - 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
           {{ '%.2f' | format((state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).value_inc_vat) }}
         unit_of_measurement: 'p/kWh'
         attribute_templates:
           valid_from: >-
-            {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) - 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+            {% set from = (((as_timestamp(utcnow()) / 1800) | round(0, 'floor') | int * 1800) - 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
             {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_from }}
           valid_to: >-
-            {% set from = (((utcnow().timestamp() / 1800) | round(0, 'floor') | int * 1800) - 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
+            {% set from = (((as_timestamp(utcnow()) / 1800) | round(0, 'floor') | int * 1800) - 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
             {{ (state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).valid_to }}
