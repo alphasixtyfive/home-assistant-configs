@@ -111,10 +111,10 @@ sensor:
 
   # Consumption
   - platform: rest
-    name: Electricity consumption
+    name: Electricity consumption yesterday
     resource_template: >-
-      {% set mpan = 'XXX' %}
-      {% set serial = 'YYY' %}
+      {% set mpan = '***' %}
+      {% set serial = '***' %}
       {% set date = as_timestamp(now() - timedelta(days = 1)) | timestamp_custom('%Y-%m-%d') %}
       https://api.octopus.energy/v1/electricity-meter-points/{{ mpan }}/meters/{{ serial }}/consumption/?period_from={{ date + 'T00:00:00' }}&period_to={{ date + 'T23:59:59' }}
     headers:
@@ -125,10 +125,10 @@ sensor:
       - "results"
 
   - platform: rest
-    name: Gas consumption
+    name: Gas consumption yesterday
     resource_template: >-
-      {% set mprn = 'XXX' %}
-      {% set serial = 'YYY' %}
+      {% set mprn = '***' %}
+      {% set serial = '***' %}
       {% set date = as_timestamp(now() - timedelta(days = 1)) | timestamp_custom('%Y-%m-%d') %}
       https://api.octopus.energy/v1/gas-meter-points/{{ mprn }}/meters/{{ serial }}/consumption/?period_from={{ date + 'T00:00:00' }}&period_to={{ date + 'T23:59:59' }}
     headers:
@@ -140,35 +140,35 @@ sensor:
 
   - platform: template
     sensors:
-      gas_cost:
-        friendly_name: Gas cost
+      gas_cost_yesterday:
+        friendly_name: Gas cost yesterday
         icon_template: mdi:cash-multiple
         value_template: >-
           {% set unit_price = 2.86 %}
           {% set standing_charge = 26.06 %}
           {% set calorific_value = 39.1 %}
-          {{ ((states('sensor.gas_consumption') | float * 1.02264 * calorific_value / 3.6) * unit_price / 100 + standing_charge / 100) | round(2) }}
+          {{ '%.2f' | format((states('sensor.gas_consumption_yesterday') | float * 1.02264 * calorific_value / 3.6) * unit_price / 100 + standing_charge / 100) }}
         unit_of_measurement: '£'
 
   - platform: template
     sensors:
-      electricity_cost:
-        friendly_name: Electricity cost
+      electricity_cost_yesterday:
+        friendly_name: Electricity cost yesterday
         icon_template: mdi:cash-multiple
         value_template: >-
           {% set standing_charge = 21 %}
           {% set rates = state_attr('sensor.agile_rates_yesterday', 'results') %}
-          {% set usage = state_attr('sensor.electricity_consumption', 'results') %}
+          {% set usage = state_attr('sensor.electricity_consumption_yesterday', 'results') %}
           {% if usage | count == 48  %}
             {% set ns = namespace(total=0) %}
             {% for p in range(0, 48) %}
               {% set ns.total = ns.total + (usage[p].consumption * rates[p].value_exc_vat / 100) %}
             {% endfor %}
-            {{ ((ns.total + standing_charge / 100) * 1.05) | round(2) }}
+            {{ '%.2f' | format((ns.total + standing_charge / 100) * 1.05) }}
           {% endif %}
         unit_of_measurement: '£'
         attribute_templates:
           fixed_rate_cost: >- 
             {% set unit_price = 16.32 %}
             {% set standing_charge = 23.32 %}
-            {{ ((states('sensor.electricity_consumption') | float * unit_price / 100 + standing_charge / 100) * 1.05) | round(2) }}
+            {{ '%.2f' | format((states('sensor.electricity_consumption_yesterday') | float * unit_price / 100 + standing_charge / 100) * 1.05) }}
