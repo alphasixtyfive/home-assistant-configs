@@ -61,7 +61,7 @@ sensor:
 
       agile_avg_rate_today:
         friendly_name: Agile average rate today
-        value_template: "{{ '%.2f' | format(state_attr('sensor.agile_rates_today', 'results') | sum(attribute='value_inc_vat') / 48) }}"
+        value_template: "{{ (state_attr('sensor.agile_rates_today', 'results') | sum(attribute='value_inc_vat') / 48) | round(2) }}"
         unit_of_measurement: 'p/kWh'
 
       agile_current_rate:
@@ -69,7 +69,7 @@ sensor:
         icon_template: mdi:flash
         value_template: >-
           {% set from = ((as_timestamp(utcnow()) / 1800) | round(0, 'floor') | int * 1800) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
-          {{ '%.2f' | format((state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).value_inc_vat) }}
+          {{ ((state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).value_inc_vat) | round(2) }}
         unit_of_measurement: 'p/kWh'
         attribute_templates:
           valid_from: >-
@@ -84,7 +84,7 @@ sensor:
         icon_template: mdi:flash
         value_template: >-
           {% set from = (((as_timestamp(utcnow()) / 1800) | round(0, 'floor') | int * 1800) + 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
-          {{ '%.2f' | format((state_attr('sensor.agile_upcoming_rates', 'results') | selectattr('valid_from', 'eq', from) | first).value_inc_vat) }}
+          {{ ((state_attr('sensor.agile_upcoming_rates', 'results') | selectattr('valid_from', 'eq', from) | first).value_inc_vat) | round(2) }}
         unit_of_measurement: 'p/kWh'
         attribute_templates:
           valid_from: >-
@@ -99,7 +99,7 @@ sensor:
         icon_template: mdi:flash
         value_template: >-
           {% set from = (((as_timestamp(utcnow()) / 1800) | round(0, 'floor') | int * 1800) - 30 * 60) | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) %}
-          {{ '%.2f' | format((state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).value_inc_vat) }}
+          {{ ((state_attr('sensor.agile_rates_today', 'results') | selectattr('valid_from', 'eq', from) | first).value_inc_vat) | round(2) }}
         unit_of_measurement: 'p/kWh'
         attribute_templates:
           valid_from: >-
@@ -147,7 +147,7 @@ sensor:
           {% set unit_price = 2.86 %}
           {% set standing_charge = 26.06 %}
           {% set calorific_value = 39.1 %}
-          {{ '%.2f' | format((states('sensor.gas_consumption_yesterday') | float * 1.02264 * calorific_value / 3.6) * unit_price / 100 + standing_charge / 100) }}
+          {{ ((states('sensor.gas_consumption_yesterday') | float * 1.02264 * calorific_value / 3.6) * unit_price / 100 + standing_charge / 100) | round(2) }}
         unit_of_measurement: '£'
 
   - platform: template
@@ -171,4 +171,4 @@ sensor:
           fixed_rate_cost: >- 
             {% set unit_price = 16.32 %}
             {% set standing_charge = 23.32 %}
-            {{ '%.2f' | format((states('sensor.electricity_consumption_yesterday') | float * unit_price / 100 + standing_charge / 100) * 1.05) }}
+            {{ ((states('sensor.electricity_consumption_yesterday') | float * unit_price / 100 + standing_charge / 100) * 1.05) | round(2) }}
