@@ -1,0 +1,11 @@
+sensor:
+  - platform: rest
+    name: Carbon intensity
+    resource_template: >-
+      {% set regionid = 12 %}
+      https://api.carbonintensity.org.uk/regional/regionid/{{ regionid }}
+    value_template: "{{ value_json.data[0].data[0].intensity.index }}"
+    json_attributes_path: "$.data[0].data[0]"
+    json_attributes:
+      - "intensity"
+      - "generationmix"
