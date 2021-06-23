@@ -1,0 +1,535 @@
+<TaskerData sr="" dvi="1" tv="5.12.22">
+	<Setting sr="prefs0">
+		<n>leEnle</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs1">
+		<n>guped</n>
+		<t>l</t>
+		<v>120</v>
+	</Setting>
+	<Setting sr="prefs10">
+		<n>custntasktwo</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs11">
+		<n>shInAPr</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs12">
+		<n>pen</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs13">
+		<n>apl</n>
+		<t>i</t>
+		<v>4</v>
+	</Setting>
+	<Setting sr="prefs14">
+		<n>appcheckMethod</n>
+		<t>i</t>
+		<v>1</v>
+	</Setting>
+	<Setting sr="prefs15">
+		<n>apn</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs16">
+		<n>proxWhenOff</n>
+		<t>i</t>
+		<v>1</v>
+	</Setting>
+	<Setting sr="prefs17">
+		<n>acrmd</n>
+		<t>l</t>
+		<v>1200</v>
+	</Setting>
+	<Setting sr="prefs18">
+		<n>mSi</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs19">
+		<n>sHapt</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs2">
+		<n>pressureWhenOff</n>
+		<t>i</t>
+		<v>1</v>
+	</Setting>
+	<Setting sr="prefs20">
+		<n>themeMaterial</n>
+		<t>i</t>
+		<v>9</v>
+	</Setting>
+	<Setting sr="prefs21">
+		<n>magnetWhenOff</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs22">
+		<n>humidityWhenOff</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs23">
+		<n>lperiod</n>
+		<t>l</t>
+		<v>1500</v>
+	</Setting>
+	<Setting sr="prefs24">
+		<n>bkcuva</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs25">
+		<n>lcD</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs26">
+		<n>aExt</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs27">
+		<n>acMSr</n>
+		<t>l</t>
+		<v>300</v>
+	</Setting>
+	<Setting sr="prefs28">
+		<n>btpiod</n>
+		<t>l</t>
+		<v>120</v>
+	</Setting>
+	<Setting sr="prefs29">
+		<n>wakeForLoc</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs3">
+		<n>sows</n>
+		<t>l</t>
+		<v>60</v>
+	</Setting>
+	<Setting sr="prefs30">
+		<n>dsd</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs31">
+		<n>hardwareAccel</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs32">
+		<n>workForLoc</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs33">
+		<n>adbwp</n>
+		<t>s</t>
+		<v>5555</v>
+	</Setting>
+	<Setting sr="prefs34">
+		<n>custntaskone</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs35">
+		<n>wfpiod</n>
+		<t>l</t>
+		<v>120</v>
+	</Setting>
+	<Setting sr="prefs36">
+		<n>ast1</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs37">
+		<n>gupt</n>
+		<t>l</t>
+		<v>90</v>
+	</Setting>
+	<Setting sr="prefs38">
+		<n>dragModeNew</n>
+		<t>i</t>
+		<v>4</v>
+	</Setting>
+	<Setting sr="prefs39">
+		<n>ast0</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs4">
+		<n>oss</n>
+		<t>i</t>
+		<v>0</v>
+	</Setting>
+	<Setting sr="prefs40">
+		<n>lPEna</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs41">
+		<n>listMarginWidthPercent</n>
+		<t>i</t>
+		<v>20</v>
+	</Setting>
+	<Setting sr="prefs42">
+		<n>lightWhenOff</n>
+		<t>i</t>
+		<v>1</v>
+	</Setting>
+	<Setting sr="prefs43">
+		<n>saena</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs44">
+		<n>lfdd</n>
+		<t>l</t>
+		<v>600</v>
+	</Setting>
+	<Setting sr="prefs45">
+		<n>csnipD</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs46">
+		<n>notactions</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs47">
+		<n>sigmotion</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs48">
+		<n>luped</n>
+		<t>l</t>
+		<v>30</v>
+	</Setting>
+	<Setting sr="prefs49">
+		<n>cmdTmnuw</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs5">
+		<n>pTs</n>
+		<t>i</t>
+		<v>17</v>
+	</Setting>
+	<Setting sr="prefs50">
+		<n>gak</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs51">
+		<n>mqt</n>
+		<t>i</t>
+		<v>10</v>
+	</Setting>
+	<Setting sr="prefs52">
+		<n>googleDriveBackups</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs53">
+		<n>cust_notification</n>
+		<t>s</t>
+		<v>cust_notification</v>
+	</Setting>
+	<Setting sr="prefs54">
+		<n>accelWhenOff</n>
+		<t>i</t>
+		<v>1</v>
+	</Setting>
+	<Setting sr="prefs55">
+		<n>qst2</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs56">
+		<n>nfcda</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs57">
+		<n>fExtCache</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs58">
+		<n>stepsWhenOff</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs59">
+		<n>kit</n>
+		<t>i</t>
+		<v>1001</v>
+	</Setting>
+	<Setting sr="prefs6">
+		<n>custntaskthree</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs60">
+		<n>beginnerMode</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs61">
+		<n>avo</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs62">
+		<n>tEnable</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs63">
+		<n>accentIndex</n>
+		<t>i</t>
+		<v>-1</v>
+	</Setting>
+	<Setting sr="prefs64">
+		<n>tempWhenOff</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs65">
+		<n>lang</n>
+		<t>s</t>
+		<v>en</v>
+	</Setting>
+	<Setting sr="prefs66">
+		<n>ast3</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs67">
+		<n>ast2</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs68">
+		<n>asactions</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs69">
+		<n>snopin</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs7">
+		<n>lae</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs70">
+		<n>wip</n>
+		<t>l</t>
+		<v>10</v>
+	</Setting>
+	<Setting sr="prefs71">
+		<n>bttp</n>
+		<t>l</t>
+		<v>15</v>
+	</Setting>
+	<Setting sr="prefs72">
+		<n>anm</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs73">
+		<n>newCellApi</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs74">
+		<n>kcph</n>
+		<t>s</t>
+		<v>PBEWithMD5And128BitAES-CBC-OpenSSL</v>
+	</Setting>
+	<Setting sr="prefs75">
+		<n>accMR</n>
+		<t>f</t>
+		<v>3.5</v>
+	</Setting>
+	<Setting sr="prefs76">
+		<n>lph</n>
+		<t>i</t>
+		<v>0</v>
+	</Setting>
+	<Setting sr="prefs77">
+		<n>qst1</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs78">
+		<n>stroutdf</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs79">
+		<n>qst0</n>
+		<t>s</t>
+		<v></v>
+	</Setting>
+	<Setting sr="prefs8">
+		<n>lEnable</n>
+		<t>b</t>
+		<v>false</v>
+	</Setting>
+	<Setting sr="prefs80">
+		<n>hideStatusBar</n>
+		<t>i</t>
+		<v>1</v>
+	</Setting>
+	<Setting sr="prefs81">
+		<n>saveMemory</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs82">
+		<n>clock_alarm</n>
+		<t>i</t>
+		<v>2</v>
+	</Setting>
+	<Setting sr="prefs83">
+		<n>uiori</n>
+		<t>i</t>
+		<v>0</v>
+	</Setting>
+	<Setting sr="prefs84">
+		<n>tpEn</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs85">
+		<n>lockIconColour</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs86">
+		<n>lPdta</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs87">
+		<n>sExps</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Setting sr="prefs88">
+		<n>sbl</n>
+		<t>i</t>
+		<v>0</v>
+	</Setting>
+	<Setting sr="prefs89">
+		<n>cmdTs</n>
+		<t>i</t>
+		<v>17</v>
+	</Setting>
+	<Setting sr="prefs9">
+		<n>mFn</n>
+		<t>b</t>
+		<v>true</v>
+	</Setting>
+	<Profile sr="prof3" ve="2">
+		<cdate>1623079154903</cdate>
+		<edate>1624480090587</edate>
+		<flags>8</flags>
+		<id>3</id>
+		<mid0>4</mid0>
+		<Event sr="con0" ve="2">
+			<code>461</code>
+			<pri>0</pri>
+			<App sr="arg0">
+				<appClass>com.hikvision.app.features.onboarding.presentation.activities.OnboardingActivity</appClass>
+				<appPkg>com.pyronixhc2.android.app</appPkg>
+				<label>HomeControl2.0</label>
+			</App>
+			<Str sr="arg1" ve="3"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Str sr="arg6" ve="3"/>
+			<Int sr="arg7" val="0"/>
+		</Event>
+	</Profile>
+	<Project sr="proj0" ve="2">
+		<cdate>1623078873711</cdate>
+		<mdate>1623079255986</mdate>
+		<name>Base</name>
+		<pids>3</pids>
+		<tids>4</tids>
+		<Img sr="icon" ve="2">
+			<nme>mw_action_home</nme>
+		</Img>
+	</Project>
+	<Task sr="task4">
+		<cdate>1623079169776</cdate>
+		<edate>1624480434488</edate>
+		<id>4</id>
+		<nme>Relay to Homeassistant</nme>
+		<pri>6</pri>
+		<Action sr="act0" ve="7">
+			<code>339</code>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES>&lt;StringArray sr=""&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;%http_cookies
+Cookies
+The cookies the server sent in the response in the Cookie:COOKIE_VALUE format. You can use this directly in the 'Headers' field of the HTTP Request action&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;%http_data
+Data
+Data that the server responded from the HTTP request.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;%http_file_output
+File Output
+Will always contain the file's full path even if you specified a directory as the File to save.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;%http_response_code
+Response Code
+The HTTP Code the server responded&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES4&gt;%http_headers()
+Response Headers
+The HTTP Headers the server sent in the response. Each header is in the 'key:value' format&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES4&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES5&gt;%http_response_length
+Response Length
+The size of the response in bytes&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES5&gt;&lt;/StringArray&gt;</net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>[Ljava.lang.String;</net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>
+				</Vals>
+			</Bundle>
+			<Int sr="arg1" val="1"/>
+			<Int sr="arg10" val="0"/>
+			<Int sr="arg11" val="0"/>
+			<Int sr="arg12" val="1"/>
+			<Str sr="arg2" ve="3">%HassAddress/api/events/tasker
+</Str>
+			<Str sr="arg3" ve="3">Authorization: Bearer %HassToken
+Content-Type: application/json</Str>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3">{"app": "%evtprm1", "title": "%evtprm2", "message": "%evtprm3"}</Str>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="30"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+	<Variable sr="vars0">
+		<n>%HassToken</n>
+		<v>YOUR_LONG_LIVED_TOKEN</v>
+	</Variable>
+	<Variable sr="vars1">
+		<n>%HassAddress</n>
+		<v>http://192.168.1.2:8123</v>
+	</Variable>
+</TaskerData>
