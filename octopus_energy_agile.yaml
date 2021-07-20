@@ -1,5 +1,5 @@
 sensor:
-  # Agile rates
+  #Agile rates
   - platform: rest
     name: Agile rates today
     resource_template: >-
@@ -8,7 +8,12 @@ sensor:
       {% set to = from + 24 * 60 * 60 %}
       {% set format = '%Y-%m-%dT%H:%M:%SZ' %}
       https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-{{ region }}/standard-unit-rates/?period_from={{ from | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) }}&period_to={{ to | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) }}
-    value_template: "{{ as_timestamp(value_json.results[-1].valid_from) | timestamp_custom('%Y-%m-%d') }}"
+    value_template: >-
+      {% if value_json.results | count > 0 %}
+        {{ as_timestamp(value_json.results[-1].valid_from) | timestamp_custom('%Y-%m-%d') }}
+      {% else %}
+        Unknown
+      {% endif %}
     json_attributes:
       - "results"
 
@@ -20,7 +25,12 @@ sensor:
       {% set to = from + 24 * 60 * 60 %}
       {% set format = '%Y-%m-%dT%H:%M:%SZ' %}
       https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-{{ region }}/standard-unit-rates/?period_from={{ from | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) }}&period_to={{ to | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) }}
-    value_template: "{{ as_timestamp(value_json.results[-1].valid_from) | timestamp_custom('%Y-%m-%d') }}"
+    value_template: >-
+      {% if value_json.results | count > 0 %}
+        {{ as_timestamp(value_json.results[-1].valid_from) | timestamp_custom('%Y-%m-%d') }}
+      {% else %}
+        Unknown
+      {% endif %}
     json_attributes:
       - "results"
 
@@ -32,7 +42,12 @@ sensor:
       {% set to = from + 24 * 60 * 60 %}
       {% set format = '%Y-%m-%dT%H:%M:%SZ' %}
       https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-{{ region }}/standard-unit-rates/?period_from={{ from | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) }}&period_to={{ to | timestamp_custom('%Y-%m-%dT%H:%M:%SZ', False) }}
-    value_template: "{{ as_timestamp(value_json.results[-1].valid_from) | timestamp_custom('%Y-%m-%d') }}"
+    value_template: >-
+      {% if value_json.results | count > 0 %}
+        {{ as_timestamp(value_json.results[-1].valid_from) | timestamp_custom('%Y-%m-%d') }}
+      {% else %}
+        Unknown
+      {% endif %}
     json_attributes:
       - "results"
 
@@ -159,7 +174,7 @@ sensor:
           {% set standing_charge = 21 %}
           {% set rates = state_attr('sensor.agile_rates_yesterday', 'results') %}
           {% set usage = state_attr('sensor.electricity_consumption_yesterday', 'results') %}
-          {% if usage | count == 48  %}
+          {% if usage | count == 48 %}
             {% set ns = namespace(total=0) %}
             {% for p in range(0, 48) %}
               {% set ns.total = ns.total + (usage[p].consumption * rates[p].value_exc_vat / 100) %}
