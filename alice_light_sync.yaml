@@ -1,0 +1,66 @@
+- alias: Sync Alice sate with lounge light strip
+  mode: restart
+  trigger:
+    - platform: state
+      entity_id: media_player.yandex_station_lounge
+      attribute: alice_state
+      to: ~
+  action:
+    - alias: Set up variables
+      variables:
+        alice_state: "{{ state_attr('media_player.yandex_station_lounge', 'alice_state') }}"
+
+    - choose:
+      - alias: Listening mode
+        conditions: "{{ alice_state == 'LISTENING' }}"
+        sequence:
+          - service: light.turn_on
+            entity_id: light.lounge_lightstrip
+            data:
+              rgb_color: [103, 57, 204]
+              brightness: 255
+          - repeat:
+              while: "{{ true }}"
+              sequence:
+                - service: light.turn_on
+                  entity_id: light.lounge_lightstrip
+                  data:
+                    rgb_color: [36, 36, 255]
+                    transition: 1
+                - delay: '00:00:01'
+                - service: light.turn_on
+                  entity_id: light.lounge_lightstrip
+                  data:
+                    rgb_color: [103, 57, 204]
+                    transition: 1
+                - delay: '00:00:01'
+
+      - alias: Speaking mode
+        conditions: "{{ alice_state == 'SPEAKING' }}"
+        sequence:
+          - service: light.turn_on
+            entity_id: light.lounge_lightstrip
+            data:
+              rgb_color: [103, 57, 204]
+              brightness: 255
+          - repeat:
+              while: "{{ true }}"
+              sequence:
+                - service: light.turn_on
+                  entity_id: light.lounge_lightstrip
+                  data:
+                    brightness: 100
+                    transition: 1
+                - delay: '00:00:01'
+                - service: light.turn_on
+                  entity_id: light.lounge_lightstrip
+                  data:
+                    brightness: 255
+                    transition: 1
+                - delay: '00:00:01'
+
+      - alias: Idle mode
+        conditions: "{{ alice_state == 'IDLE' }}"
+        sequence:
+          - service: light.turn_off
+            entity_id: light.lounge_lightstrip
