@@ -1,4 +1,4 @@
-- alias: Capture outdoor motion
+- alias: Notify on outdoor motion
   mode: parallel
   trigger:
     - platform: state
@@ -6,100 +6,133 @@
         - binary_sensor.line_crossing_side_passage
         - binary_sensor.line_crossing_kitchen_side
         - binary_sensor.line_crossing_porch_roof
-        - binary_sensor.line_crossing_kitchen_roof
+        #- binary_sensor.line_crossing_kitchen_roof
         - binary_sensor.line_crossing_back_garden
       from: 'off'
       to: 'on'
+  variables:
+    camera_name: "{{ trigger.entity_id[28:] }}"
+    camera_entity: "camera.{{ camera_name }}"
+    camera_friendly_name: "{{ state_attr(camera_entity, 'friendly_name') }}"
+    timer_entity: "timer.snooze_motion_{{ camera_name }}"
+    timestamp: "{{ now().strftime('%d-%m-%Y_%H-%M-%S') }}"
+    snapshot_filename: "motion.{{ camera_name }}.{{ timestamp }}.jpg"
+    clip_filename: "motion.{{ camera_name }}.{{ timestamp }}.mp4"
+    navigate_url: "{{ states('sensor.external_url') }}/lovelace/cameras"
+    message: "Motion in {{ camera_friendly_name }}"
   condition:
-    alias: Outdoor photo or video notify is enabled
-    condition: or
-    conditions:
     - condition: state
-      entity_id: input_boolean.outdoor_motion_notify_photo
+      entity_id: input_boolean.outdoor_motion_notify
       state: 'on'
-    - condition: state
-      entity_id: input_boolean.outdoor_motion_notify_video
-      state: 'on'
+    - "{{ not is_state(timer_entity, 'active') }}"
+  action:
+    - alias: Create a snapshot
+      service: camera.snapshot
+      target:
+        entity_id: "{{ camera_entity }}"
+      data:
+        filename: "/media/camera/snapshots/{{ snapshot_filename }}"
+
+    - alias: Notify family mobile apps
+      service: notify.family_mobile_apps
+      data:
+        message: "🏃🏼 {{ message }}"
+        data:
+          image: "/media/local/camera/snapshots/{{ snapshot_filename }}"
+          url: "{{ navigate_url }}"
+          group: "{{ camera_name }}"
+          actions:
+            - action: "SNOOZE_MOTION:{{ camera_name }}:15"
+              title: "Snooze for 15 mins"
+              icon: "sfsymbols:bell.slash"
+
+            - action: "SNOOZE_MOTION:{{ camera_name }}:30"
+              title: "Snooze for 30 mins"
+              icon: "sfsymbols:bell.slash"
+
+            - action: "SNOOZE_MOTION:{{ camera_name }}:60"
+              title: "Snooze for 1 hour"
+              icon: "sfsymbols:bell.slash"
+
+    - alias: Record clip
+      service: camera.record
+      data:
+        entity_id: "{{ camera_entity }}"
+        filename: "/media/camera/clips/{{ clip_filename }}"
+        lookback: 10
+        duration: 15
+    
+    - alias: Wait for clip file to be created
+      wait_for_trigger:
+        - platform: event
+          event_type: folder_watcher
+          event_data:
+            event_type: created
+            file: "{{ clip_filename }}"
+      timeout:
+        seconds: 30
+      continue_on_timeout: false
+
+    - alias: Wait 25 secs for clip to be recorded
+      delay:
+        seconds: 25
+
+    - alias: Notify family telegram
+      service: notify.family_telegram
+      data:
+        message: ""
+        data:
+          video:
+            file: "/media/camera/clips/{{ clip_filename }}"
+            caption: "🏃🏼 {{ message }}"
+            inline_keyboard:
+              - "🔕 15 mins:/snooze_motion:{{ camera_name }}:15, 🔕 30 mins:/snooze_motion:{{ camera_name }}:30, 🔕 1 hour:/snooze_motion:{{ camera_name }}:60"
+
+- alias: Snooze outdoor motion events
+  mode: parallel
+  trigger:
+    - platform: event
+      event_type: mobile_app_notification_action
+      id: "mobile_app"
+    - platform: event
+      event_type: telegram_callback
+      id: "telegram"
+  variables:
+    action: >-
+      {{ iif(trigger.id == 'telegram', trigger.event.data.data, trigger.event.data.action) }}
+  condition:
+    - "{{ action.startswith('SNOOZE_MOTION:') or action.startswith('/snooze_motion:') }}"
   action:
     - alias: Set up variables
       variables:
-        camera_name: "{{ trigger.entity_id[28:] }}"
+        camera_name: "{{ action.split(':')[1] }}"
         camera_entity: "camera.{{ camera_name }}"
         camera_friendly_name: "{{ state_attr(camera_entity, 'friendly_name') }}"
-        timestamp: "{{ now().strftime('%d-%m-%Y_%H-%M-%S') }}"
-        snapshot_filename: "motion.{{ camera_name }}.{{ timestamp }}.jpg"
-        clip_filename: "motion.{{ camera_name }}.{{ timestamp }}.mp4"
-        message: "Motion in {{ camera_friendly_name }}"
-  
-    - choose:
-      - conditions:
-          - condition: state
-            entity_id: input_boolean.outdoor_motion_notify_photo
-            state: 'on'
-        sequence:
-          - alias: Create a snapshot
-            service: camera.snapshot
-            target:
-              entity_id: "{{ camera_entity }}"
-            data:
-              filename: "/media/camera/snapshots/{{ snapshot_filename }}"
-                  
-          - alias: Send a photo to Telegram
-            service: telegram_bot.send_photo
-            data:
-              target:
-                - !secret telegram_chat_id_alexey
-                - !secret telegram_chat_id_marina
-              file: "/media/camera/snapshots/{{ snapshot_filename }}"
-              caption: "{{ message }}"
+        timer_entity: "timer.snooze_motion_{{ camera_name }}"
+        duration: "{{ action.split(':')[2] | int(default=5) }}"
+        message: "Motion alerts for {{ camera_friendly_name }} have been snoozed for {{ duration }} mins."
 
-          - alias: Send a notification to companion apps
-            service: notify.mobile_devices
-            data:
-              message: "{{ message }}"
-              data:
-                image: "/media/local/camera/snapshots/{{ snapshot_filename }}"
+    - alias: Start timer
+      service: timer.start
+      target:
+        entity_id: "{{ timer_entity }}"
+      data:
+        duration: "{{ duration | multiply(60) }}"
+    
+    - if:
+      - "{{ trigger.id == 'telegram' }}"
+      then:
+        - service: telegram_bot.answer_callback_query
+          data:
+            callback_query_id: "{{ trigger.event.data.id }}"
+            message: ""
 
-      - conditions:
-          - condition: state
-            entity_id: input_boolean.outdoor_motion_notify_video
-            state: 'on'
-        sequence:
-          - alias: Record clip
-            service: camera.record
-            data:
-              entity_id: "{{ camera_entity }}"
-              filename: "/media/camera/clips/{{ clip_filename }}"
-              lookback: 10
-              duration: 15
-          
-          - alias: Wait for clip file to be created
-            wait_for_trigger:
-              - platform: event
-                event_type: folder_watcher
-                event_data:
-                  event_type: created
-                  file: "{{ clip_filename }}"
-            timeout:
-              seconds: 30
-            continue_on_timeout: false
+    - alias: Notify family mobile apps
+      service: notify.family_mobile_apps
+      data:
+        message: "🔕 {{ message }}"
 
-          - alias: Wait 25 secs for clip to be recorded
-            delay:
-              seconds: 25
-
-          - alias: Send a notification to Telegram
-            service: telegram_bot.send_video
-            data:
-              target:
-                - !secret telegram_chat_id_alexey
-                - !secret telegram_chat_id_marina
-              file: "/media/camera/clips/{{ clip_filename }}"
-              caption: "{{ message }}"
-
-          - alias: Send a notification to companion apps
-            service: notify.mobile_devices
-            data:
-              message: "{{ message }}"
-              data:
-                video: "/media/local/camera/clips/{{ clip_filename }}"
+    - alias: Notify family telegram
+      service: notify.family_telegram
+      data:
+        message: "🔕 {{ message }}"
