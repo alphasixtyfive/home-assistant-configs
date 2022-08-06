@@ -67,8 +67,8 @@
         - platform: event
           event_type: folder_watcher
           event_data:
-            event_type: created
-            file: "{{ clip_filename }}"
+            event_type: moved
+            dest_file: "{{ clip_filename }}"
       timeout:
         seconds: 30
       continue_on_timeout: false
