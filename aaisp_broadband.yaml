@@ -1,0 +1,28 @@
+rest:
+  resource: https://chaos2.aa.net.uk/broadband/info
+  scan_interval: 900
+  method: POST
+  headers:
+    Content-Type: application/json
+  # Secret must be in the form of '{"control_login":"YOUR_LOGIN","control_password":"YOUR_PASSWORD"}'
+  payload: !secret aaisp_json_auth
+  sensor:
+    - name: "AAISP Broadband TX Rate"
+      icon: mdi:upload-box-outline
+      value_template: "{{ (value_json.info[0]['tx_rate'] | int(default=0) / 1000000) | round(2) }}"
+      unit_of_measurement: "Mbit/s"
+
+    - name: "AAISP Broadband RX Rate"
+      icon: mdi:download-box-outline
+      value_template: "{{ (value_json.info[0]['rx_rate'] | int(default=0) / 1000000) | round(2) }}"
+      unit_of_measurement: "Mbit/s"
+
+    - name: "AAISP Broadband Quota Monthly"
+      icon: mdi:chart-arc
+      value_template: "{{ (value_json.info[0]['quota_monthly'] | int(default=0) / 1000000000) | int }}"
+      unit_of_measurement: "GB"
+
+    - name: "AAISP Broadband Quota Remaining"
+      icon: mdi:chart-arc
+      value_template: "{{ (value_json.info[0]['quota_remaining'] | int(default=0) / 1000000000) | int }}"
+      unit_of_measurement: "GB"
