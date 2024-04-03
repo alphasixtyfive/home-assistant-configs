@@ -1,0 +1,67 @@
+rest:
+  - resource: "http://192.168.2.1/status/ports/.xml"
+    username: !secret firebrick_username
+    password: !secret firebrick_password
+    scan_interval: 30
+    sensor:
+      - name: Firebrick WAN1 Status
+        value_template: >-
+          {{ value_json['status']['port']
+            | map(attribute='port')
+            | selectattr('@number', 'eq', '1')
+            | map(attribute='@link')
+            | first
+          }}
+
+      - name: Firebrick WAN2 Status
+        value_template: >-
+          {{ value_json['status']['port']
+            | map(attribute='port')
+            | selectattr('@number', 'eq', '2')
+            | map(attribute='@link')
+            | first
+          }}
+
+      - name: Firebrick WAN1 TX
+        unit_of_measurement: Bytes
+        value_template: >-
+          {{ value_json['status']['eth-stats']['eth-stat'] 
+            | selectattr('@port','eq','Port 1')
+            | selectattr('@stat','eq','Tx bytes')
+            | map(attribute='@total')
+            | first
+            | int(default=0)
+          }}
+
+      - name: Firebrick WAN1 RX
+        unit_of_measurement: Bytes
+        value_template: >-
+          {{ value_json['status']['eth-stats']['eth-stat'] 
+            | selectattr('@port','eq','Port 1')
+            | selectattr('@stat','eq','Rx good bytes')
+            | map(attribute='@total')
+            | first
+            | int(default=0)
+          }}
+
+      - name: Firebrick WAN2 TX
+        unit_of_measurement: Bytes
+        value_template: >-
+          {{ value_json['status']['eth-stats']['eth-stat'] 
+            | selectattr('@port','eq','Port 2')
+            | selectattr('@stat','eq','Tx bytes')
+            | map(attribute='@total')
+            | first
+            | int(default=0)
+          }}
+
+      - name: Firebrick WAN2 RX
+        unit_of_measurement: Bytes
+        value_template: >-
+          {{ value_json['status']['eth-stats']['eth-stat'] 
+            | selectattr('@port','eq','Port 2')
+            | selectattr('@stat','eq','Rx good bytes')
+            | map(attribute='@total')
+            | first
+            | int(default=0)
+          }}
