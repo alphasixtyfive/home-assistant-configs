@@ -1,70 +1,60 @@
 sensor:
-  # WAN1 (.4104) / WAN1 (.8200)
   - platform: snmp
     name: Firebrick SNMP WAN1 In
     host: 192.168.2.1
-    baseoid: 1.3.6.1.2.1.2.2.1.10.4104 # ifInOctets
+    baseoid: 1.3.6.1.2.1.2.2.1.10.4104
     community: "public"
     version: "2c"
-    scan_interval: 10
-    unit_of_measurement: octets
+    state_class: total_increasing
+    icon: mdi:cloud-download
+    unit_of_measurement: "B"
 
   - platform: snmp
     name: Firebrick SNMP WAN1 Out
     host: 192.168.2.1
-    baseoid: 1.3.6.1.2.1.2.2.1.16.4104 # ifOutOctets
+    baseoid: 1.3.6.1.2.1.2.2.1.16.4104
     community: "public"
     version: "2c"
-    scan_interval: 10
-    unit_of_measurement: octets
+    state_class: total_increasing
+    icon: mdi:cloud-download
+    unit_of_measurement: "B"
 
-  - platform: statistics
-    name: Firebrick SNMP WAN1 In Mean
-    entity_id: sensor.firebrick_snmp_wan1_in
-    state_characteristic: mean
-    sampling_size: 4
-    max_age:
-      hours: 24
+  - platform: derivative
+    name: Firebrick SNMP WAN1 In Derivative
+    source: sensor.firebrick_snmp_wan1_in
+    unit_time: "s"
+    round: 2
 
-  - platform: statistics
-    name: Firebrick SNMP WAN1 Out Mean
-    entity_id: sensor.firebrick_snmp_wan1_out
-    state_characteristic: mean
-    sampling_size: 4
-    max_age:
-      hours: 24
+  - platform: derivative
+    name: Firebrick SNMP WAN1 Out Derivative
+    source: sensor.firebrick_snmp_wan1_out
+    unit_time: "s"
+    round: 2
 
 template:
-  - trigger:
-      - platform: state
-        entity_id: sensor.firebrick_snmp_wan1_in
-    sensor:
-      - unique_id: fb-snmp-wan1-rx-rate
-        name: Firebrick SNMP WAN1 RX Rate
-        state: >-
-          {{ (
-            ((trigger.to_state.state | int - trigger.from_state.state | int) * 8 / 1000000)
-            / ( as_timestamp(trigger.to_state.last_updated) - as_timestamp(trigger.from_state.last_updated))
-            ) | round(2)
-          }}
-        state_class: measurement
-        device_class: data_rate
+  - sensor:
+      - name: Firebrick SNMP WAN1 RX Rate
+        unique_id: fb-snmp-wan1-rx-rate
         unit_of_measurement: Mbit/s
-        icon: mdi:download
+        icon: mdi:cloud-download
+        state_class: measurement
+        state: >-
+          {{
+            states('sensor.firebrick_snmp_wan1_in_derivative')
+            | multiply(8)
+            | multiply(0.000001)
+            | round(5)
+          }}
 
-  - trigger:
-      - platform: state
-        entity_id: sensor.firebrick_snmp_wan1_out
-    sensor:
-      - unique_id: fb-snmp-wan1-tx-rate
-        name: Firebrick SNMP WAN1 TX Rate
-        state: >-
-          {{ (
-            ((trigger.to_state.state | int - trigger.from_state.state | int) * 8 / 1000000)
-            / ( as_timestamp(trigger.to_state.last_updated) - as_timestamp(trigger.from_state.last_updated))
-            ) | round(2)
-          }}
-        state_class: measurement
-        device_class: data_rate
+      - name: Firebrick SNMP WAN1 TX Rate
+        unique_id: fb-snmp-wan1-tx-rate
         unit_of_measurement: Mbit/s
-        icon: mdi:upload
+        icon: mdi:cloud-download
+        state_class: measurement
+        state: >-
+          {{
+            states('sensor.firebrick_snmp_wan1_out_derivative')
+            | multiply(8)
+            | multiply(0.000001)
+            | round(5)
+          }}
