@@ -1,0 +1,70 @@
+sensor:
+  # WAN1 (.4104) / WAN1 (.8200)
+  - platform: snmp
+    name: Firebrick SNMP WAN1 In
+    host: 192.168.2.1
+    baseoid: 1.3.6.1.2.1.2.2.1.10.4104 # ifInOctets
+    community: "public"
+    version: "2c"
+    scan_interval: 10
+    unit_of_measurement: octets
+
+  - platform: snmp
+    name: Firebrick SNMP WAN1 Out
+    host: 192.168.2.1
+    baseoid: 1.3.6.1.2.1.2.2.1.16.4104 # ifOutOctets
+    community: "public"
+    version: "2c"
+    scan_interval: 10
+    unit_of_measurement: octets
+
+  - platform: statistics
+    name: Firebrick SNMP WAN1 In Mean
+    entity_id: sensor.firebrick_snmp_wan1_in
+    state_characteristic: mean
+    sampling_size: 4
+    max_age:
+      hours: 24
+
+  - platform: statistics
+    name: Firebrick SNMP WAN1 Out Mean
+    entity_id: sensor.firebrick_snmp_wan1_out
+    state_characteristic: mean
+    sampling_size: 4
+    max_age:
+      hours: 24
+
+template:
+  - trigger:
+      - platform: state
+        entity_id: sensor.firebrick_snmp_wan1_in
+    sensor:
+      - unique_id: fb-snmp-wan1-rx-rate
+        name: Firebrick SNMP WAN1 RX Rate
+        state: >-
+          {{ (
+            ((trigger.to_state.state | int - trigger.from_state.state | int) * 8 / 1000000)
+            / ( as_timestamp(trigger.to_state.last_updated) - as_timestamp(trigger.from_state.last_updated))
+            ) | round(2)
+          }}
+        state_class: measurement
+        device_class: data_rate
+        unit_of_measurement: Mbit/s
+        icon: mdi:download
+
+  - trigger:
+      - platform: state
+        entity_id: sensor.firebrick_snmp_wan1_out
+    sensor:
+      - unique_id: fb-snmp-wan1-tx-rate
+        name: Firebrick SNMP WAN1 TX Rate
+        state: >-
+          {{ (
+            ((trigger.to_state.state | int - trigger.from_state.state | int) * 8 / 1000000)
+            / ( as_timestamp(trigger.to_state.last_updated) - as_timestamp(trigger.from_state.last_updated))
+            ) | round(2)
+          }}
+        state_class: measurement
+        device_class: data_rate
+        unit_of_measurement: Mbit/s
+        icon: mdi:upload
